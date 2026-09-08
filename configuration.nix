@@ -1,15 +1,17 @@
 # * NixOS Configuration file by Reend
 # * github: Reend21
 
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 
 {
   imports =
     [
       ./hardware-configuration.nix
       ./localization.nix
-      <home-manager/nixos>
+      # <home-manager/nixos>
     ];
+
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   # * Packages
   nixpkgs.config.allowUnfree = true;
@@ -31,7 +33,7 @@
   gnome-maps
   gnome-characters
   gnome-music
-  gnome-photos
+  #gnome-photos
   gnome-terminal
   gnome-tour
   gnome-logs
@@ -48,7 +50,7 @@
   gnome-system-monitor
   gnome-connections
   snapshot
-  extensions
+  # gnome-extensions
 ]);
 
   users.defaultUserShell = pkgs.fish;
@@ -57,27 +59,26 @@
   # ! GNOME Fine Tune
 
   programs.dconf.enable = true;
-  services.dbus.packages = with pkgs; [ gnome2.GConf ];
 
-  home-manager.users.reend = {
-  dconf = {
-    enable = true;
-    settings."org/gnome/shell" = {
-      disable-user-extensions = false;
-      enabled-extensions = with pkgs.gnomeExtensions; [
-        "app-hider@lynith.dev"
-        "appindicatorsupport@rgcjonas.gmail.com" 
-        "blur-my-shell@aunetx"
-        "custom-hot-corners-extended@G-dH.github.com"
-        "user-theme@gnome-shell-extensions.gcampax.github.com"
-        "medialine@funinkina.co.in"
-        "caffeine@patapon.info"
-        "gnome-clipboard@b00f.github.io"
-        "space-bar@luchrioh"
-      ];
-    };
-  };
-};
+  #home-manager.users.reend = {
+  #dconf = {
+  #  enable = true;
+  #  settings."org/gnome/shell" = {
+  #    disable-user-extensions = false;
+  #    enabled-extensions = with pkgs.gnomeExtensions; [
+  #      "app-hider@lynith.dev"
+  #      "appindicatorsupport@rgcjonas.gmail.com" 
+  #      "blur-my-shell@aunetx"
+  #      "custom-hot-corners-extended@G-dH.github.com"
+  #      "user-theme@gnome-shell-extensions.gcampax.github.com"
+  #      "medialine@funinkina.co.in"
+  #      "caffeine@patapon.info"
+  #      "gnome-clipboard@b00f.github.io"
+  #      "space-bar@luchrioh"
+  #    ];
+  #  };
+  #};
+#};
 
   # * Services
   services.openssh.enable = true;
@@ -120,7 +121,7 @@
 
   services.libinput.enable = true;
 
-  system.copySystemConfiguration = true; # also coppy the config file to /run/current-system/configuration.nix if you accidentally deleted.
+  # system.copySystemConfiguration = true; # also coppy the config file to /run/current-system/configuration.nix if you accidentally deleted. - doesn't work with flakes.
   system.stateVersion = "26.05";
   
   networking.firewall.enable = true;
