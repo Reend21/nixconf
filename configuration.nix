@@ -1,7 +1,7 @@
 # * NixOS Configuration file by Reend
 # * github: Reend21
 
-{ config, pkgs, inputs, ... }:
+{ config, pkgs, inputs, lib, ... }:
 
 {
   imports =
@@ -17,10 +17,19 @@
   nixpkgs.config.allowUnfree = true;
 
   environment.systemPackages = with pkgs; [
-  pkgs.vscodium 
+  pkgs.vscodium
   pkgs.fish
-  pkgs.flatpak
-  ];
+  (pkgs.flatpak.overrideAttrs (oldAttrs: {
+    separateDebugInfo = false;
+
+    meta = oldAttrs.meta // {
+      description = "Bu flatpak pakedini ben özelleştirdim!";
+    };
+
+  }
+  )
+  )
+ ];
 
   environment.gnome.excludePackages = (with pkgs; [
   atomix
@@ -95,6 +104,8 @@
   };
 
   # * System
+
+  nix.optimise.automatic = true;
 
   # ! Bootloader
   boot.loader.grub.enable = true;
